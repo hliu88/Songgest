@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Songgest! {% endblock %}</h1>
+
+{% if value == null %}
+<form method="POST">
+    <input name="text">
+    <input type="submit">
+</form>
+{% else %}
+<h3>Playlist Received: {{value}}</h3>
+    <!-- <h3>Prcoessing...</h3> -->
+<meta http-equiv="refresh" content="1; /processing" />
+{% endif %}
+{% endblock %}
