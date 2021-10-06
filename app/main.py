@@ -20,11 +20,11 @@ class importPlaylist(Resource):
     def put(self, playlistURL):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return':'playlist url invalid'}
-        if(path.exists("playlists/%s.csv"%playlist_url[34:56])):
+        if(path.exists("playlists/%s.csv"%playlistURL[34:56])):
             return {'return':'playlists already imported, can proceed or force import from /importPlaylist/F/{URL}'}
         else:
             playlist_imp(playlistURL)
-            return {'playlist': playlist_url[34:56], 'return':'imported'}
+            return {'playlist': playlistURL[34:56], 'return':'imported'}
 
 @api.route('/importPlaylist/F/<path:playlistURL>')
 class importPlaylistF(Resource):
@@ -33,7 +33,7 @@ class importPlaylistF(Resource):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return':'playlist url invalid'}
         playlist_imp(playlistURL)
-        return {'playlist': playlist_url[34:56], 'return':'imported'}
+        return {'playlist': playlistURL[34:56], 'return':'imported'}
 
 @api.route('/getStats/<path:playlistURL>')
 class getStats(Resource):
@@ -41,7 +41,7 @@ class getStats(Resource):
     def put(self, playlistURL):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return':'playlist url invalid'}
-        if not(path.exists("playlists/%s.csv"%playlist_url[34:56])):
+        if not(path.exists("playlists/%s.csv"%playlistURL[34:56])):
             return {'return':'playlist not imported'}
         #make function call for stats
         return {'return':'playlist exists'}   
