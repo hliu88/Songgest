@@ -9,22 +9,9 @@ from os import path
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app, support_credentials=True)
-app.config["SECRET_KEY"] = '1239120312301'
-app.config.from_object(__name__)
-#Session(app)
-Session()
-response = ''
-
-class userSession(object):
-    def __init__(self, playlistLink):
-        self.id = ''
-        self.playlistName = playlistLink
-    def get(self):
-        # return json.dumps(self.playlistName, default=lambda o: o.__dict__, 
-        #     sort_keys=True, indent=4)
-        return self.playlistName
-        # api.abort(404,"User with playlist % not exist".format(id))
+# CORS(app, support_credentials=True)
+# app.config["SECRET_KEY"] = '1239120312301'
+# app.config.from_object(__name__)
 
 @api.route('/importPlaylist/<path:playlistURL>')
 class importPlaylist(Resource):
