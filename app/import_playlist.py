@@ -47,7 +47,7 @@ def playlist_imp(playlist_url):
 	# playlist_tracks
 
 	playlist_tracks.dropna(subset=['artist', 'track'])
-	playlist_tracks.to_csv("playlists/%s.csv"%playlist_url[-16:-1], encoding='utf-8', index = False)
+	playlist_tracks.to_csv("playlists/%s.csv"%playlist_url[34:56], encoding='utf-8', index = False)
 
 	return "hello"
 
