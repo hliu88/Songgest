@@ -1,4 +1,5 @@
 LINTER = flake8
+APP_DIR = app
 
 FORCE:
 
@@ -15,6 +16,10 @@ github: FORCE
 docs: 
 	pydoc3 -w main.py
 
-#export FLASK_APP=main.py
-# export FLASK_ENV=development
-# flask run
+tests: lint unit
+
+unit: FORCE
+	cd $(APP_DIR); nosetests --with-coverage --cover-package=$(APP_DIR)
+
+lint: FORCE
+	$(LINTER) $(APP_DIR)/*.py

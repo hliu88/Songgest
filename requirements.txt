@@ -7,3 +7,6 @@ pandas
 spotipy
 flask-cors
 python-decouple
+flake8
+nose
+coverage
