@@ -5,7 +5,7 @@ from decouple import config
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-import numexpr as ne
+# import numexpr as ne
 
 ne.set_vml_num_threads(1)
 
