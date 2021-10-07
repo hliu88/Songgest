@@ -7,7 +7,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 # import numexpr as ne
 
-ne.set_vml_num_threads(1)
+# ne.set_vml_num_threads(1)
 
 client_id = config('CLIENTID')
 client_secret = config('CLIENTSECRET')
