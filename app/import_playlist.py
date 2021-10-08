@@ -5,7 +5,9 @@ from decouple import config
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-# import numexpr as ne
+import numexpr
+
+numexpr.set_num_threads(numexpr.detect_number_of_cores())
 
 # ne.set_vml_num_threads(1)
 
@@ -52,7 +54,7 @@ def playlist_imp(playlist_url):
     # playlist_tracks
 
     playlist_tracks.dropna(subset=['artist', 'track'])
-    playlist_tracks.to_csv("playlists/%s.csv" % playlist_url[34:56],
+    playlist_tracks.to_csv("../playlists/%s.csv" % playlist_url[34:56],
                            encoding='utf-8', index=False)
     return number_of_songs
 

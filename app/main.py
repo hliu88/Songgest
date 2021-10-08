@@ -1,5 +1,5 @@
-from flask import Flask
-from flask_restx import Api, Resource
+from flask import Flask, request
+from flask_restx import Api, Resource, fields
 # from flask_session import Session
 from app.import_playlist import playlist_imp
 from app.is_playlist_valid import is_valid
@@ -14,6 +14,27 @@ api = Api(app)
 # CORS(app, support_credentials=True)
 # app.config["SECRET_KEY"] = '1239120312301'
 # app.config.from_object(__name__)
+
+parameters = api.model('Name Model', {'feature':
+                                      fields.String(
+                                        required=True,
+                                        description="feature preference",
+                                        help="feature cannot be blank"),
+                                      'artist':
+                                      fields.String(
+                                        required=True,
+                                        description="artist preference",
+                                        help="artist cannot be blank")})
+
+
+@api.route('/analyse/<path:playlistURL>')
+class analyse(Resource):
+    @api.expect(parameters)
+    def put(self, playlistURL):
+        try:
+            return {'return': request.json['feature']}
+        except KeyError:
+            return {'return': "KeyError"}
 
 
 @api.route('/importPlaylist/<path:playlistURL>')
