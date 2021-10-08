@@ -16,9 +16,3 @@ def is_valid(playlistURL):
         return 'valid'
     except Exception:
         return 'invalid'
-
-# def main():
-# 	is_valid('https://open.spotify.com/playlist/114JM3RIWLBz7f4j1dTYjU?si=a084fb36f5004f6e')
-
-# if __name__ == '__main__':
-# 	main()

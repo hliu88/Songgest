@@ -19,7 +19,8 @@ docs:
 tests: lint unit
 
 unit: FORCE
-	cd $(APP_DIR); nosetests --with-coverage --cover-package=$(APP_DIR)
+# 	cd $(APP_DIR); nosetests --with-coverage --cover-package=$(APP_DIR)
+	nosetests --with-coverage --cover-package=$(APP_DIR)
 
 lint: FORCE
 	$(LINTER) $(APP_DIR)/*.py
