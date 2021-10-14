@@ -6,3 +6,5 @@ app/.cache
 app/.cache
 app/.coverage
 .coverage
+*.pyc
+app/.DS_Store
