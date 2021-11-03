@@ -3,11 +3,14 @@ from flask_restx import Api, Resource, fields
 # from flask_session import Session
 from app.import_playlist import playlist_imp
 from app.is_playlist_valid import is_valid
+from app.get_genre import get_gen
+from app.display_genre import display_gen
+from app.suggest import ML
 # from flask_cors import CORS, cross_origin
 # import subprocess
 # import os.path
+import json
 from os import path
-
 
 app = Flask(__name__)
 api = Api(app)
@@ -73,6 +76,32 @@ class getStats(Resource):
         return {'return': 'playlist exists'}
 
 
+@api.route('/get_genre/<path:playlistURL>')
+class get_genre(Resource):
+    @api.expect()
+    def put(self, playlistURL):
+        if(is_valid(playlistURL) == 'invalid'):
+            return {'return': 'playlist url invalid'}
+        if not(path.exists("playlist/%s.csv" % playlistURL[34:56])):
+            return {'return': 'playlist not imported'}
+        else:
+            get_gen(playlistURL[34:56])
+            return {'return': 'genre added'}
+
+
+@api.route('/display_genre/<path:playlistURL>')
+class display_genre(Resource):
+    @api.expect()
+    def put(self, playlistURL):
+        if(is_valid(playlistURL) == 'invalid'):
+            return {'return': 'playlist url invalid'}
+        if not(path.exists("playlist/%s_ML.csv" % playlistURL[34:56])):
+            return {'return': 'playlist not processed/imported'}
+        else:
+            output = json.dumps(display_gen(playlistURL[34:56]))
+            return {'return': json.loads(output)}
+
+
 @api.route('/suggest/<path:playlistURL>')
 class suggest(Resource):
     @api.expect()
@@ -81,8 +110,9 @@ class suggest(Resource):
             return {'return': 'playlist url invalid'}
         if not(path.exists("playlist/%s.csv" % playlistURL[34:56])):
             return {'return': 'playlist not imported'}
-        # make function call for suggest
-        return {'return': 'calling suggest'}
+        else:
+            output = json.dumps(ML('playlist'))
+            return {'Songs suggested': output}
 
 
 @api.route('/endpoints')
