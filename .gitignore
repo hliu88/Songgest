@@ -8,3 +8,9 @@ app/.coverage
 .coverage
 *.pyc
 app/.DS_Store
+*.pyc
+app/templates/.DS_Store
+app/static/.DS_Store
+app/__pycache__/main.cpython-38.pyc
+app/__pycache__/import_playlist.cpython-38.pyc
+app/.DS_Store
