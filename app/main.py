@@ -82,7 +82,7 @@ class get_genre(Resource):
     def put(self, playlistURL):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return': 'playlist url invalid'}
-        if not(path.exists("playlist/%s.csv" % playlistURL[34:56])):
+        if not(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return {'return': 'playlist not imported'}
         else:
             get_gen(playlistURL[34:56])
@@ -95,7 +95,7 @@ class display_genre(Resource):
     def put(self, playlistURL):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return': 'playlist url invalid'}
-        if not(path.exists("playlist/%s_ML.csv" % playlistURL[34:56])):
+        if not(path.exists("playlists/%s_ML.csv" % playlistURL[34:56])):
             return {'return': 'playlist not processed/imported'}
         else:
             output = json.dumps(display_gen(playlistURL[34:56]))
@@ -108,7 +108,7 @@ class suggest(Resource):
     def put(self, playlistURL):
         if(is_valid(playlistURL) == 'invalid'):
             return {'return': 'playlist url invalid'}
-        if not(path.exists("playlist/%s.csv" % playlistURL[34:56])):
+        if not(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return {'return': 'playlist not imported'}
         else:
             output = json.dumps(ML('playlist'))
