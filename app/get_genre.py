@@ -10,15 +10,15 @@ client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager,
                      requests_timeout=10, retries=10)
 
-
+pd.options.mode.chained_assignment = None
 def get_gen(filename):
     playlist = pd.read_csv('playlists/%s.csv' % filename)
     # df1 = pd.DataFrame(columns=['genre','popularity','result'])
     df1 = pd.DataFrame(columns=['genre', 'result'])
-    df = playlist.join(df1, how="outer")
+    playlist = playlist.join(df1, how="outer")
 
     for ind in playlist.index:
-        df['result'][ind] = 1
+        playlist['result'][ind] = 1
         try:
             artist_data = sp.search(playlist['artist'][ind],
                                     limit=1, type="artist")
@@ -29,7 +29,9 @@ def get_gen(filename):
             artists_genre = artist_data["artists"]['items'][0]['genres']
         except IndexError:
             pass
-        df['genre'][ind] = artists_genre
+        #SettingWithCopyWarning
+        playlist['genre'][ind] = artists_genre
+        print(ind)
     print('done')
 
     # for ind in playlist.index:
@@ -46,4 +48,4 @@ def get_gen(filename):
     #     df['popularity'][ind] = song_pop
     # print('done')
 
-    df.to_csv('playlists/%s_ML.csv' % filename, encoding='utf-8', index=False)
+    playlist.to_csv('playlists/%s_ML.csv' % filename, encoding='utf-8', index=False)

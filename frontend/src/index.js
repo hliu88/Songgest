@@ -38,11 +38,16 @@ import ButtonLoader from "./ButtonLoader/index"
 //   }
 // }
 
+function fetch() {
+  return new Promise(resolve => setTimeout(() => resolve(42), 1000));
+}
+
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
     {/* <NameForm /> */}
-    <ButtonLoader />
+    {/* <ButtonLoader /> */}
   </React.StrictMode>,
   document.getElementById('root')
 );

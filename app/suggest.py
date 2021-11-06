@@ -43,7 +43,8 @@ def ML(filename):
     model.add(Dense(units=1, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer='adam',
                   metrics=['accuracy'])
-    model.fit(x_train, y_train, epochs=150, batch_size=10)
+    # model.fit(x_train, y_train, epochs=150, batch_size=10)
+    model.fit(x_train, y_train, epochs=50, batch_size=10)
 
     # yhat = (model.predict(x_test) > 0.5).astype(int)
 

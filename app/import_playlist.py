@@ -54,6 +54,7 @@ def playlist_imp(playlist_url):
     # playlist_tracks
 
     playlist_tracks.dropna(subset=['artist', 'track'])
+    playlist_tracks.dropna(how="all", inplace=True)
     playlist_tracks.to_csv("playlists/%s.csv" % playlist_url[34:56],
                            encoding='utf-8', index=False)
     return number_of_songs
