@@ -15,17 +15,37 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager,
                      requests_timeout=10, retries=10)
 
 
+column_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
+               'analysis_url', 'duration_ms', 'time_signature',
+               'genre']
+genre_column_drop = ['artist', 'track', 'danceability', 'energy', 'key',
+                'loudness', 'mode', 'speechiness', 'acousticness',
+                'instrumentalness', 'liveness', 'valence', 'tempo',
+                'type', 'id', 'uri', 'track_href',
+                'analysis_url', 'duration_ms', 'time_signature']
+column_rec_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
+                  'analysis_url', 'duration_ms', 'time_signature']
+
+
+def train_model(x_train, y_train):
+    model = Sequential()
+    model.add(Dense(11, kernel_initializer='uniform', activation='relu'))
+    model.add(Dense(33, activation='relu'))
+    model.add(Dense(33, activation='relu'))
+    model.add(Dense(units=1, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy', optimizer='adam',
+                  metrics=['accuracy'])
+    # model.fit(x_train, y_train, epochs=150, batch_size=10)
+    model.fit(x_train, y_train, epochs=1, batch_size=10)
+    # yhat = (model.predict(x_test) > 0.5).astype(int)
+    return model
+
+
 def ML(filename):
     playlist = pd.read_csv('playlists/master_ML.csv')
-    playlist1 = pd.read_csv('playlists/%s_ML.csv' % filename)
-    column0 = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
-               'analysis_url', 'duration_ms', 'time_signature',
-               'genre', 'popularity']
-    column1 = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
-               'analysis_url', 'duration_ms',
-               'time_signature', 'genre']
-    playlist2 = playlist.drop(columns=column0)
-    playlist3 = playlist1.drop(columns=column1)
+    master = pd.read_csv('playlists/%s_ML.csv' % filename)
+    playlist2 = playlist.drop(columns=column_drop+['popularity'])
+    playlist3 = master.drop(columns=column_drop)
     frames = [playlist2, playlist3]
     result = pd.concat(frames)
     for i in range(20):
@@ -36,20 +56,12 @@ def ML(filename):
     y = p[:, -1]
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.15)
 
-    model = Sequential()
-    model.add(Dense(11, kernel_initializer='uniform', activation='relu'))
-    model.add(Dense(33, activation='relu'))
-    model.add(Dense(33, activation='relu'))
-    model.add(Dense(units=1, activation='sigmoid'))
-    model.compile(loss='binary_crossentropy', optimizer='adam',
-                  metrics=['accuracy'])
-    # model.fit(x_train, y_train, epochs=150, batch_size=10)
-    model.fit(x_train, y_train, epochs=50, batch_size=10)
+    model = train_model(x_train, y_train)
 
     # yhat = (model.predict(x_test) > 0.5).astype(int)
 
     genre_cnt = {}
-    for ind in playlist1.index:
+    for ind in master.index:
         a = playlist['genre'][ind]
         a = a.replace("'", '')
         a = a.replace("'", "")
@@ -77,12 +89,7 @@ def ML(filename):
         except Exception:
             pass
 
-    columns2 = ['artist', 'track', 'danceability', 'energy', 'key',
-                'loudness', 'mode', 'speechiness', 'acousticness',
-                'instrumentalness', 'liveness', 'valence', 'tempo',
-                'type', 'id', 'uri', 'track_href',
-                'analysis_url', 'duration_ms', 'time_signature']
-    playlist_tracks = pd.DataFrame(columns=columns2,
+    playlist_tracks = pd.DataFrame(columns=genre_column_drop,
                                    index=range(0, len(rec_playlist)))
 
     for i in range(len(rec_playlist)):
@@ -92,9 +99,7 @@ def ML(filename):
               (tracks=trackz)[0].values()))))
         playlist_tracks.iloc[i] = current_row
 
-    column_rec = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
-                  'analysis_url', 'duration_ms', 'time_signature']
-    playlist_tracks1 = playlist_tracks.drop(columns=column_rec)
+    playlist_tracks1 = playlist_tracks.drop(columns=column_rec_drop)
 
     playlist_tracks2 = playlist_tracks1.iloc[:, :11]
     playlist_tracks2.values

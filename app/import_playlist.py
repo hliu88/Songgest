@@ -1,14 +1,11 @@
 # 'https://open.spotify.com/playlist/114JM3RIWLBz7f4j1dTYjU'
 # 'https://open.spotify.com/playlist/4VrP9ojSb5gm01kMru4jzj'
-
 from decouple import config
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 # import numexpr
-
 # numexpr.set_num_threads(numexpr.detect_number_of_cores())
-
 # ne.set_vml_num_threads(1)
 
 client_id = config('CLIENTID')
@@ -24,22 +21,18 @@ def playlist_imp(playlist_url):
     columns = ['artist', 'track']
     list(map(lambda x: columns.append(x),
          list(sp.audio_features(id_test)[0].keys())))
-
     playlist_tracks = pd.DataFrame(columns=columns, index=range(0, 10000))
-
     playlist_total = sp.user_playlist_tracks(username,
                                              playlist_url, fields='total')
     number_of_songs = playlist_total["total"]
-
     row_counter = 0
     offset_val = 0
-
     playlist_total = sp.user_playlist_tracks(username,
                                              playlist_url, fields='total')
     number_of_songs = playlist_total["total"]
-    # max_val = number_of_songs
+    max_val = number_of_songs
 
-    while offset_val < 1:  # max_val:
+    while offset_val < max_val:
         for track in sp.user_playlist_tracks(username, playlist_url,
                                              offset=offset_val)['items']:
             current_id = track['track']['id']
@@ -51,7 +44,6 @@ def playlist_imp(playlist_url):
             row_counter += 1
         print(offset_val)
         offset_val += 100
-    # playlist_tracks
 
     playlist_tracks.dropna(subset=['artist', 'track'])
     playlist_tracks.dropna(how="all", inplace=True)

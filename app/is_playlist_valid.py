@@ -13,6 +13,9 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 def is_valid(playlistURL):
     try:
         sp.user_playlist_tracks(username, playlistURL)
-        return 'valid'
+        return True
     except Exception:
-        return 'invalid'
+        return False
+
+
+        
