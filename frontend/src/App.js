@@ -1,42 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import logo from './logo.svg';
 import './App.css';
-const state = 0;
-let page;
-page = <p>hi</p>
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   ); 
-// }
-// function App(){
-//   if(state === 0){
-//     page = <p>...</p>
-//   }
-// }
-// return = this.App
-
-// ReactDOM.render(
-//   {App},
-//   document.getElementById('root')
-// );
 class App extends React.Component {
 
   constructor(props) {
@@ -46,32 +10,44 @@ class App extends React.Component {
         playlistURL: null,
         playlistURL_coded: null,
         submitted: null,
+        postId: null,
+        initialGet: null,
      }
      this.handleChange = this.handleChange.bind(this);
      this.handleSubmit = this.handleSubmit.bind(this);
      this.updateState = this.updateState.bind(this);
   };
+
+  async componentDidMount() {
+      const requestOptions = {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          // body: JSON.stringify({ title: 'React POST Request Example' })
+      };
+      const response = await fetch('http://127.0.0.1:8000/suggest/' + this.state.playlistURL_coded, requestOptions);
+      const data = await response.json();
+      this.setState({ postId: data.return });
+      alert(this.state.postId)
+  }
+
+
   getURL(){
     return this.state.playlistURL
   }
+
   updateState() {
      this.setState({data: 'Data updated...'})
   }
-  handleChange(event) {    this.setState({playlistURL: event.target.value});  }
-  handleSubmit(event) {
-    this.setState({playlistURL: event.target.value})
-    this.setState({submitted: true})
+
+  handleChange(event) {    
+    this.setState({playlistURL: event.target.value,
+                   playlistURL_coded: encodeURIComponent(this.state.playlistURL)
+                  });  
   }
 
-  //encodeURIComponent(this.state.playlistURL).replace(':', '%3A').replace('/', '%2F')
-
-  // useEffect(url){
-  //   fetch("http://127.0.0.1:8000/importPlaylist/" + url)
-  //   .then(response => response.json()
-  //   .then(data => {
-  //     console.log(data)
-  //   })
-  // )}
+  handleSubmit(event) {
+    this.setState({submitted: true})
+  }
 
   renderFunc(){
     if(this.state.submitted === null){
@@ -85,16 +61,12 @@ class App extends React.Component {
         </form>
       );
     }
-    if(this.state.submitted && this.state.playlistURL !== null){
-      // const temp = this.encodeURIComponent(this.state.playlistURL).replace(':', '%3A').replace('/', '%2F').bind(this)
-    // //   alert(this.getURL())
-    // //   // return(
-    // //   //   //make api call
-    // //   //     alert(temp)
-    // //   // );
+    if(this.state.submitted && this.state.playlistURL !== null && this.state.initialGet === null){
+      // this.componentDidMount()
+      // this.setState({initialGet: true})
+      // alert(this.state.postId)
     }
   }
-  // this.useEffect(encodeURIComponent(this.state.playlistURL).replace(':', '%3A').replace('/', '%2F'))
 
   render() {
     return (
