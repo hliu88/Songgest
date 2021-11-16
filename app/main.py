@@ -16,6 +16,14 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 playlistInvalid_return = {'return': 'playlist url invalid'}
 playlistNotImported_return = {'return': 'playlist not imported'}
 
+@api.route('/test')
+class importPlaylist(Resource):
+    """
+    ImportPlaylist from user input playlist URL
+    """
+    @api.expect()
+    def get(self):
+        return {'return': 'hello'}
 
 @api.route('/importPlaylist/<path:playlistURL>')
 class importPlaylist(Resource):

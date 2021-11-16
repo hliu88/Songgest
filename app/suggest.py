@@ -89,29 +89,26 @@ def ML(filename):
         except Exception:
             pass
 
-    playlist_tracks = pd.DataFrame(columns=genre_column_drop,
+    rec_tracks = pd.DataFrame(columns=genre_column_drop,
                                    index=range(0, len(rec_playlist)))
-
     for i in range(len(rec_playlist)):
         current_row = [rec_playlist[i][0], rec_playlist[i][1]]
         trackz = [rec_playlist[i][2]]
         (list(map(lambda x: current_row.append(x), list(sp.audio_features
               (tracks=trackz)[0].values()))))
-        playlist_tracks.iloc[i] = current_row
+        rec_tracks.iloc[i] = current_row
 
-    playlist_tracks1 = playlist_tracks.drop(columns=column_rec_drop)
-
-    playlist_tracks2 = playlist_tracks1.iloc[:, :11]
-    playlist_tracks2.values
-    playlist_tracks2 = np.asarray(playlist_tracks2).astype(np.float32)
-    yhat_pred = (model.predict(playlist_tracks2) > 0.5).astype(int)
+    rec_tracks_dropped = rec_tracks.drop(columns=column_rec_drop)
+    rec_tracks_dropped_y = rec_tracks_dropped.iloc[:, :11]
+    rec_tracks_dropped_y.values
+    rec_tracks_dropped_y = np.asarray(rec_tracks_dropped_y).astype(np.float32)
+    yhat_pred = (model.predict(rec_tracks_dropped_y) > 0.5).astype(int)
 
     df = pd.DataFrame(columns=['result'])
-    playlist_tracks = playlist_tracks.join(df, how="outer")
+    rec_tracks = rec_tracks.join(df, how="outer")
+    rec_tracks = rec_tracks.sort_index()
+    for ind in rec_tracks.index:
+        rec_tracks['result'][ind] = yhat_pred[ind][0]
+    rec_tracks = rec_tracks[rec_tracks.result != 0]
 
-    playlist_tracks = playlist_tracks.sort_index()
-    for ind in playlist_tracks.index:
-        playlist_tracks['result'][ind] = yhat_pred[ind][0]
-    playlist_tracks = playlist_tracks[playlist_tracks.result != 0]
-
-    return(playlist_tracks.shape[0])
+    return(rec_tracks.shape[0])
