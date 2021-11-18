@@ -12,7 +12,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app, resources={r'/*': {'origins': '*'}})
+cors = CORS(app, resources={r'/*': {'origins': '*'}})
 playlistInvalid_return = {'return': 'playlist url invalid'}
 playlistNotImported_return = {'return': 'playlist not imported'}
 

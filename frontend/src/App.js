@@ -1,96 +1,123 @@
 import React from 'react';
+import {useState,useEffect} from 'react';
 import './App.css';
+import axios from 'axios'
 
-class App extends React.Component {
+axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
-  constructor(props) {
-     super(props);
 
-     this.state = {
-        playlistURL: null,
-        playlistURL_coded: null,
-        submitted: null,
-        postId: null,
-        initialGet: null,
-     }
-     this.handleChange = this.handleChange.bind(this);
-     this.handleSubmit = this.handleSubmit.bind(this);
-     this.updateState = this.updateState.bind(this);
-  };
 
-  async componentDidMount() {
-      const requestOptions = {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          // body: JSON.stringify({ title: 'React POST Request Example' })
-      };
-      const response = await fetch('http://127.0.0.1:8000/suggest/' + this.state.playlistURL_coded, requestOptions);
-      const data = await response.json();
-      this.setState({ postId: data.return });
-      alert(this.state.postId)
+function App(){
+  const [playlistURL, setPlaylistURL] = useState({
+    value: '',
+    loaded: false})    //value
+  const [playlistURL_coded, setPlaylistURL_coded] = useState('')
+  const [test,setTest] = useState('')
+  const [impReturn, setImpReturn] = useState('')
+  const [analyReturn, setAnalyReturn] = useState('')
+  const [suggestReturn, setSuggestReturn] = useState('')
+  // const [test,setTest] = useState({
+  //   data: '',
+  //   loading: true
+  // })
+  const [name,setName] = useState('')
+
+  const handleClick = async() => {
+    const data = await axios.get('/test')
+    setTest({
+        data: data.data.return,
+        loading: false
+    })
   }
 
-
-  getURL(){
-    return this.state.playlistURL
-  }
-
-  updateState() {
-     this.setState({data: 'Data updated...'})
-  }
-
-  handleChange(event) {    
-    this.setState({playlistURL: event.target.value,
-                   playlistURL_coded: encodeURIComponent(this.state.playlistURL)
-                  });  
-  }
-
-  handleSubmit(event) {
-    this.setState({submitted: true})
-  }
-
-  renderFunc(){
-    if(this.state.submitted === null){
-      return (
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Import Playlist:
-            <input type="text" value={this.state.playlistURL} onChange={this.handleChange} />        
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-      );
+  const Form = () => {
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      console.log(`Form submitted, ${playlistURL.value}`);    
+      // setPlaylistURL({
+      //   loaded: true
+      // })
+      console.log(encodeURIComponent(playlistURL.value))
     }
-    if(this.state.submitted && this.state.playlistURL !== null && this.state.initialGet === null){
-      // this.componentDidMount()
-      // this.setState({initialGet: true})
-      // alert(this.state.postId)
-    }
-  }
 
-  render() {
-    return (
+    return(
       <div>
-        {this.renderFunc()}
+        <h2>playlist URL</h2>
+        <form onSubmit = {handleSubmit}>
+            <input onChange = {(e) => setPlaylistURL({value:e.target.value})} value = {playlistURL.value}></input>
+            <button type = 'submit'>Click to submit</button>
+        </form>
+        {encodeURIComponent(playlistURL.value)}
       </div>
     );
   }
-  // render() {
-  //    return (
-  //       <div>
-  //         <form>
-  //         <label>
-  //           Name:
-  //           <input type="text" name="name" />
-  //         </label>
-  //         <input type="submit" value="Submit" />
-  //         </form>
 
+  const postImport = async() => {
+    // alert(encodeURIComponent(playlistURL.value))
+    const data = await axios.post('/importPlaylist/' + encodeURIComponent(playlistURL.value))
+    setImpReturn({
+      loaded: true,
+      data: data.data.return,
+    })
+  }
 
-  //          <button onClick = {this.updateState}>CLICK</button>
-  //          <h4>{this.state.data}</h4>
-  //       </div>
-  //    );
-  // }
+  const analyze = async() =>{
+    if(impReturn.data == "playlist url invalid"){
+      alert('invalid')
+    }else{
+      const data = await axios.put('/get_genre/' + encodeURIComponent(playlistURL.value))
+      setAnalyReturn({
+        loaded: true,
+        data: data.data.return,
+      })
+    }
+  }
+
+  const suggest = async() =>{
+    if(analyReturn.data == 'genres added'){
+      const data = await axios.get('/suggest/' + encodeURIComponent(playlistURL.value))
+      setSuggestReturn({
+        loaded: true,
+        data: data.data.return,
+      })
+    }
+  }
+  return (
+    <div className="container">
+        <h2>Get Test</h2>
+        <button onClick = {handleClick}>Get Test</button>
+        <div>
+          {test.loading?'':
+          test.data}
+        </div>
+
+        <div>
+          {playlistURL.loaded?false:
+          Form()}
+        </div>
+          
+        <div>
+          {playlistURL.loaded?true:
+          <button onClick = {postImport}>Import playlist</button>}
+          <h5>{impReturn.data}</h5>
+        </div>
+
+        <div>
+          <button onClick = {analyze}>Analyze</button>
+          <h5>{analyReturn.data}</h5>
+        </div>
+
+        <div>
+          <button onClick = {suggest}>Suggest</button>
+          <h5>{suggestReturn.data}</h5>
+          
+        </div>
+
+    </div>
+    
+  );
 }
+
 export default App;
