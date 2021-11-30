@@ -133,19 +133,22 @@ def ML(filename):
 
     # token = util.prompt_for_user_token(username,scope,client_id=client_id,
     #                 client_secret=client_secret,redirect_uri='http://localhost:8888/callback') 
-    token = util.prompt_for_user_token(username,scope,client_id=client_id,
-                client_secret=client_secret,redirect_uri='https://songgestfrontend.herokuapp.com/callback') 
-    spo = spotipy.Spotify(auth=token)
-    playlist_name = "".join(random.choice(string.ascii_letters) for i in range(12)) 
-    spo.user_playlist_create(username, name=playlist_name)
-    playlist_id = ''
-    playlists = spo.user_playlists(username)
-    for playlist in playlists['items']: 
-        if playlist['name'] == playlist_name:
-            playlist_id = playlist['id']
-    spo.user_playlist_add_tracks(username, playlist_id, rec_tracks['uri'].values.tolist())
+
+
+    # token = util.prompt_for_user_token(username,scope,client_id=client_id,
+    #             client_secret=client_secret,redirect_uri='https://songgestfrontend.herokuapp.com/callback') 
+    # spo = spotipy.Spotify(auth=token)
+    # playlist_name = "".join(random.choice(string.ascii_letters) for i in range(12)) 
+    # spo.user_playlist_create(username, name=playlist_name)
+    # playlist_id = ''
+    # playlists = spo.user_playlists(username)
+    # for playlist in playlists['items']: 
+    #     if playlist['name'] == playlist_name:
+    #         playlist_id = playlist['id']
+    # spo.user_playlist_add_tracks(username, playlist_id, rec_tracks['uri'].values.tolist())
 
     if(rec_tracks.shape[0] == 0):
         return("Inconclusive Result")
-    return(['https://open.spotify.com/playlist/' + playlist_id])
+    # return(['https://open.spotify.com/playlist/' + playlist_id])
+    return(rec_tracks['artist'].values.tolist())
     
