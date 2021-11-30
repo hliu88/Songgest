@@ -1,1 +1,1 @@
-web: gunicorn app.main:app ps:scale web=1
+web: gunicorn app.main:app ps:scale web=1 --timeout 300
