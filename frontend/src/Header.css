@@ -1,0 +1,10 @@
+.header {
+    padding: 3px 0;
+    text-align: center;
+    background: #222;
+    color: #1DB954;
+  }
+.header img {
+    width: 100px;
+    height: 13px;
+}
