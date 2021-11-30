@@ -26,8 +26,8 @@ class mainTest(TestCase):
 		ret = main.display_genre(Resource).get(playlistURL)
 		self.assertTrue(ret)
 
-		ret= main.suggest(Resource).get(playlistURL)
-		self.assertTrue(ret)
+		# ret= main.suggest(Resource).get(playlistURL)
+		# self.assertTrue(ret)
 	
 	# def test_is_valid(self):
 	# 	self.assertEqual(is_valid.is_valid(playlistURL), True)
