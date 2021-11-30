@@ -5,6 +5,9 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
 import spotipy
+import spotipy.util as util
+import random
+import string
 from spotipy.oauth2 import SpotifyClientCredentials
 client_id = config('CLIENTID')
 client_secret = config('CLIENTSECRET')
@@ -16,16 +19,24 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager,
                      requests_timeout=10, retries=10)
 
 
+
+
+
 column_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
                'analysis_url', 'duration_ms', 'time_signature',
                'genre']
 genre_column_drop = ['artist', 'track', 'danceability', 'energy', 'key',
-                     'loudness', 'mode', 'speechiness', 'acousticness',
-                     'instrumentalness', 'liveness', 'valence', 'tempo',
-                     'type', 'id', 'uri', 'track_href',
-                     'analysis_url', 'duration_ms', 'time_signature']
+                'loudness', 'mode', 'speechiness', 'acousticness',
+                'instrumentalness', 'liveness', 'valence', 'tempo',
+                'type', 'id', 'uri', 'track_href',
+                'analysis_url', 'duration_ms', 'time_signature']
 column_rec_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
-                   'analysis_url', 'duration_ms', 'time_signature']
+                  'analysis_url', 'duration_ms', 'time_signature']
+scope = 'user-read-playback-state,user-modify-playback-state,\
+         user-read-currently-playing,app-remote-control,streaming,\
+         playlist-modify-public,playlist-modify-private,\
+         playlist-read-private,playlist-read-collaborative,\
+         user-library-modify,user-library-read,streaming'
 
 
 def train_model(x_train, y_train):
@@ -47,7 +58,7 @@ def train_model(x_train, y_train):
 
 def ML(filename):
     """
-    Classify songs with training model, then suggests songs and
+    Classify songs with training model, then suggests songs and 
     compare against traning model
     """
     playlist = pd.read_csv('playlists/master_ML.csv')
@@ -67,7 +78,7 @@ def ML(filename):
     model = train_model(x_train, y_train)
 
     # yhat = (model.predict(x_test) > 0.5).astype(int)
-    # function
+    #function
     genre_cnt = {}
     for ind in master.index:
         a = playlist['genre'][ind]
@@ -98,7 +109,7 @@ def ML(filename):
             pass
 
     rec_tracks = pd.DataFrame(columns=genre_column_drop,
-                              index=range(0, len(rec_playlist)))
+                                   index=range(0, len(rec_playlist)))
     for i in range(len(rec_playlist)):
         current_row = [rec_playlist[i][0], rec_playlist[i][1]]
         trackz = [rec_playlist[i][2]]
@@ -119,12 +130,23 @@ def ML(filename):
         rec_tracks['result'][ind] = yhat_pred[ind][0]
     rec_tracks = rec_tracks[rec_tracks.result != 0]
 
-    # sp.user_playlist_create(username, filename,
-    #                         public=True, description='test')
+    # sp.user_playlist_create(username, filename, public=True, description='test')
     # track_list = list(rec_tracks['id'])
-    # sp.user_playlist_add_tracks(username,
-    #                             playlist_id=filename, tracks=track_list)
+    # sp.user_playlist_add_tracks(username, playlist_id=filename, tracks=track_list)
     # return(rec_tracks.shape[0])
+
+    token = util.prompt_for_user_token(username,scope,client_id=client_id,
+                    client_secret=client_secret,redirect_uri='http://localhost:8888/callback') 
+    spo = spotipy.Spotify(auth=token)
+    playlist_name = "".join(random.choice(string.ascii_letters) for i in range(12)) 
+    spo.user_playlist_create(username, name=playlist_name)
+    playlist_id = ''
+    playlists = spo.user_playlists(username)
+    for playlist in playlists['items']: 
+        if playlist['name'] == playlist_name:
+            playlist_id = playlist['id']
+    spo.user_playlist_add_tracks(username, playlist_id, rec_tracks['uri'].values.tolist())
+
     if(rec_tracks.shape[0] == 0):
-        return(["Inconclusive Result"])
-    return(rec_tracks['artist'].values.tolist())
+        return("Inconclusive Result")
+    return(['https://open.spotify.com/playlist/' + playlist_id])

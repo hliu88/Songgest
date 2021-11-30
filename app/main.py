@@ -101,7 +101,7 @@ class suggest(Resource):
         if not(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return playlistNotImported_return
         else:
-            output = json.dumps(ML('playlist'))
+            output = json.dumps(ML(playlistURL[34:56]))
             return {'return': output}
 
 

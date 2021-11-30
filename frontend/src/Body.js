@@ -62,7 +62,7 @@ function Body(){
       loaded: true,
       data: data.data.return,
     })
-    if(impReturn.data == "playlist url invalid"){
+    if(impReturn.data === "playlist url invalid"){
       alert('invalid url, press logout and try again')
     }
     else{
@@ -78,7 +78,7 @@ function Body(){
     setSuggestReturn({
       loaded:true,
     })
-    if(analyReturn.data == 'genres added'){
+    if(analyReturn.data === 'genres added'){
       const data = await axios.get('/suggest/' + encodeURIComponent(URL))
       setSuggestReturn({
         loaded: true,
@@ -107,7 +107,8 @@ function Body(){
           <h5>{analyReturn.data}</h5>
         }
         {analyReturn.loaded && !suggestReturn.loaded?<button onClick = {suggest}>Suggest</button>:''}
-        {suggestReturn.print?<h5>Songs Suggested: {suggestReturn.data.slice(1,-1)}</h5>:''}
+        {suggestReturn.print?
+        <a href={suggestReturn.data.slice(2,-2)} target="_blank" rel="noopener noreferrer">Suggested Playlist URL: {suggestReturn.data.slice(2,-2)}</a>:''}
     </div>
     
   );
