@@ -3,7 +3,7 @@ APP_DIR = app
 
 FORCE:
 
-# prod: tests
+prod: tests #github
 
 dev_env: FORCE
 	#enable virtual env
@@ -14,7 +14,9 @@ github: FORCE
 	git push origin master
 
 docs: 
-	pydoc3 -w main.py
+	# cd $(APP_DIR); pydoc3 -w main.py
+	cd $(APP_DIR); python3 -m pydoc -w ./*.py
+
 
 tests: lint unit
 
