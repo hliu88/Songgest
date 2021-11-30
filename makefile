@@ -18,7 +18,7 @@ docs:
 	cd $(APP_DIR); python3 -m pydoc -w ./*.py
 
 
-tests: lint unit
+tests: unit lint
 
 unit: FORCE
 	nosetests --with-coverage --cover-package=$(APP_DIR)
