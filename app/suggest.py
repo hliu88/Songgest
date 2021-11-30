@@ -26,12 +26,12 @@ column_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
                'analysis_url', 'duration_ms', 'time_signature',
                'genre']
 genre_column_drop = ['artist', 'track', 'danceability', 'energy', 'key',
-                'loudness', 'mode', 'speechiness', 'acousticness',
-                'instrumentalness', 'liveness', 'valence', 'tempo',
-                'type', 'id', 'uri', 'track_href',
-                'analysis_url', 'duration_ms', 'time_signature']
+                     'loudness', 'mode', 'speechiness', 'acousticness',
+                     'instrumentalness', 'liveness', 'valence', 'tempo',
+                     'type', 'id', 'uri', 'track_href',
+                     'analysis_url', 'duration_ms', 'time_signature']
 column_rec_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
-                  'analysis_url', 'duration_ms', 'time_signature']
+                   'analysis_url', 'duration_ms', 'time_signature']
 scope = 'user-read-playback-state,user-modify-playback-state,\
          user-read-currently-playing,app-remote-control,streaming,\
          playlist-modify-public,playlist-modify-private,\
