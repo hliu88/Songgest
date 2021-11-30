@@ -1,7 +1,13 @@
+"""
+get genres from playlist
+"""
 import pandas as pd
 
 
 def display_gen(filename) -> dict:
+    """
+    store genres in sorted order into dict
+    """
     playlist = pd.read_csv("playlists/%s_ML.csv" % filename)
 
     genre_cnt = {}

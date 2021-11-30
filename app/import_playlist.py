@@ -1,3 +1,6 @@
+"""
+import playlist from user provided url
+"""
 # 'https://open.spotify.com/playlist/114JM3RIWLBz7f4j1dTYjU'
 # 'https://open.spotify.com/playlist/4VrP9ojSb5gm01kMru4jzj'
 from decouple import config
@@ -16,6 +19,9 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
 def playlist_imp(playlist_url):
+    """
+    import playlist from url into CSV file
+    """
     id_test = sp.user_playlist_tracks(username,
                                       playlist_url)['items'][0]['track']['id']
     columns = ['artist', 'track']

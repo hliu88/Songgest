@@ -1,3 +1,6 @@
+"""
+Import genres of playlist into CSV file
+"""
 from decouple import config
 import pandas as pd
 import spotipy
@@ -13,6 +16,10 @@ pd.options.mode.chained_assignment = None
 
 
 def get_gen(filename):
+    """
+    call Spotify api for genre information for each song, append to
+    dataframe
+    """
     playlist = pd.read_csv('playlists/%s.csv' % filename)
     # df1 = pd.DataFrame(columns=['genre','popularity','result'])
     df1 = pd.DataFrame(columns=['genre', 'result'])
@@ -48,4 +55,5 @@ def get_gen(filename):
     #     df['popularity'][ind] = song_pop
     # print('done')
 
-    playlist.to_csv('playlists/%s_ML.csv' % filename, encoding='utf-8', index=False)
+    playlist.to_csv('playlists/%s_ML.csv' % filename,
+                    encoding='utf-8', index=False)

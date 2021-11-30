@@ -16,14 +16,15 @@ cors = CORS(app, resources={r'/*': {'origins': '*'}})
 playlistInvalid_return = {'return': 'playlist url invalid'}
 playlistNotImported_return = {'return': 'playlist not imported'}
 
-@api.route('/test')
-class importPlaylist(Resource):
-    """
-    ImportPlaylist from user input playlist URL
-    """
-    @api.expect()
-    def get(self):
-        return {'return': 'hello'}
+# @api.route('/test')
+# class importPlaylist(Resource):
+#     """
+#     ImportPlaylist from user input playlist URL
+#     """
+#     @api.expect()
+#     def get(self):
+#         return {'return': 'bonjour'}
+
 
 @api.route('/importPlaylist/<path:playlistURL>')
 class importPlaylist(Resource):
@@ -32,7 +33,8 @@ class importPlaylist(Resource):
     """
     @api.expect()
     def post(self, playlistURL):
-        if not(is_valid(playlistURL)): return playlistInvalid_return
+        if not(is_valid(playlistURL)):
+            return playlistInvalid_return
         if(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return {'return': 'playlists already imported,\
             can proceed or force import from /importPlaylist/F/{URL}'}
@@ -49,7 +51,8 @@ class importPlaylistF(Resource):
     """
     @api.expect()
     def post(self, playlistURL):
-        if not(is_valid(playlistURL)): return playlistInvalid_return
+        if not(is_valid(playlistURL)):
+            return playlistInvalid_return
         playlist_imp(playlistURL)
         return {'playlist': playlistURL[34:56], 'return': 'imported'}
 
@@ -61,7 +64,8 @@ class get_genre(Resource):
     """
     @api.expect()
     def put(self, playlistURL):
-        if not(is_valid(playlistURL)): return playlistInvalid_return
+        if not(is_valid(playlistURL)):
+            return playlistInvalid_return
         if not(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return playlistNotImported_return
         else:
@@ -76,7 +80,8 @@ class display_genre(Resource):
     """
     @api.expect()
     def get(self, playlistURL):
-        if not(is_valid(playlistURL)): return playlistInvalid_return
+        if not(is_valid(playlistURL)):
+            return playlistInvalid_return
         if not(path.exists("playlists/%s_ML.csv" % playlistURL[34:56])):
             return {'return': 'playlist not processed/imported'}
         else:
@@ -91,12 +96,13 @@ class suggest(Resource):
     """
     @api.expect()
     def get(self, playlistURL):
-        if not(is_valid(playlistURL)): return playlistInvalid_return
+        if not(is_valid(playlistURL)):
+            return playlistInvalid_return
         if not(path.exists("playlists/%s.csv" % playlistURL[34:56])):
             return playlistNotImported_return
         else:
             output = json.dumps(ML('playlist'))
-            return {'Songs suggested': output}
+            return {'return': output}
 
 
 @api.route('/endpoints')
