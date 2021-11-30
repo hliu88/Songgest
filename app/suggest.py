@@ -18,10 +18,6 @@ client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager,
                      requests_timeout=10, retries=10)
 
-
-
-
-
 column_drop = ['artist', 'track', 'type', 'id', 'uri', 'track_href',
                'analysis_url', 'duration_ms', 'time_signature',
                'genre']
@@ -135,8 +131,10 @@ def ML(filename):
     # sp.user_playlist_add_tracks(username, playlist_id=filename, tracks=track_list)
     # return(rec_tracks.shape[0])
 
+    # token = util.prompt_for_user_token(username,scope,client_id=client_id,
+    #                 client_secret=client_secret,redirect_uri='http://localhost:8888/callback') 
     token = util.prompt_for_user_token(username,scope,client_id=client_id,
-                    client_secret=client_secret,redirect_uri='http://localhost:8888/callback') 
+                client_secret=client_secret,redirect_uri='https://songgestfrontend.herokuapp.com/callback') 
     spo = spotipy.Spotify(auth=token)
     playlist_name = "".join(random.choice(string.ascii_letters) for i in range(12)) 
     spo.user_playlist_create(username, name=playlist_name)
